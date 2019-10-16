@@ -10,7 +10,7 @@ if(!is_file(__DIR__."/vendor/autoload.php"))
 }
 require "vendor/autoload.php";
 use Phine\
-{Code, Project, Section};
+{AbstractSection, Code, Project};
 if(empty($argv[1]))
 {
 	die("Syntax: php box.php <file> [desired_line_width = 80] [--no-minify]\n");
@@ -54,7 +54,7 @@ function writeLine($line)
 	}
 }
 
-function handleSection(Section $section)
+function handleSection(AbstractSection $section)
 {
 	global $line, $desired_line_length;
 	$section_code = $section->getCode();
@@ -84,7 +84,7 @@ for($i = 0; $i <= $i_limit; $i++)
 {
 	$section = $code->sections[$i];
 	handleSection($section);
-	if($line !== "" && $section->requires_delimiter && $i < $i_limit && !$code->sections[$i + 1]->delimits())
+	if($line !== "" && $section->requiresDelimiter() && $i < $i_limit && !$code->sections[$i + 1]->delimits())
 	{
 		$line .= " ";
 	}

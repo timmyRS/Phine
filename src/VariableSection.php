@@ -1,15 +1,15 @@
 <?php
 namespace Phine;
-class VariableSection extends Section
+class VariableSection extends AbstractSection
 {
 	static $built_ins = [];
 
 	function __construct(string $content)
 	{
-		parent::__construct($content, true);
+		parent::__construct($content);
 	}
 
-	function getCode()
+	function getCode(): string
 	{
 		return "\$".$this->content;
 	}
@@ -20,6 +20,11 @@ class VariableSection extends Section
 	}
 
 	function delimits(): bool
+	{
+		return true;
+	}
+
+	function requiresDelimiter(): bool
 	{
 		return true;
 	}

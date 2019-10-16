@@ -1,20 +1,28 @@
 <?php
 namespace Phine;
-class StringSection extends Section
+class StringSection extends AbstractSection
 {
-	function __construct(string $content)
+	private $delimiter;
+
+	function __construct(string $content, string $delimiter)
 	{
-		parent::__construct($content, false);
+		parent::__construct($content);
+		$this->delimiter = $delimiter;
 	}
 
-	function getCode()
+	function getCode(): string
 	{
-		return "\"".$this->content."\"";
+		return $this->delimiter.$this->content.$this->delimiter;
 	}
 
 	function delimits(): bool
 	{
 		return true;
+	}
+
+	function requiresDelimiter(): bool
+	{
+		return false;
 	}
 
 	/**
@@ -37,13 +45,13 @@ class StringSection extends Section
 	{
 		$len = max($desired_length_for_first_part, 3);
 		$parts = [
-			new StringSection(substr($this->content, 0, $len - 2))
+			new StringSection(substr($this->content, 0, $len - 2), $this->delimiter)
 		];
 		$remaining = substr($this->content, $len - 2);
 		if($remaining !== "")
 		{
 			array_push($parts, new Section("."));
-			array_push($parts, new StringSection($remaining));
+			array_push($parts, new StringSection($remaining, $this->delimiter));
 		}
 		return $parts;
 	}

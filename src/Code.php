@@ -4,12 +4,12 @@ use Exception;
 class Code
 {
 	/**
-	 * @var Section[] $sections
+	 * @var AbstractSection[] $sections
 	 */
 	public $sections = [];
 
 	/**
-	 * Constructs the Code class, converting the given code into an array of Sections.
+	 * Constructs the Code class, converting the given code into an array of sections.
 	 *
 	 * @param string $code
 	 * @throws Exception
@@ -70,7 +70,7 @@ class Code
 					case "\"":
 						if($string == 1)
 						{
-							array_push($this->sections, new StringSection($section));
+							array_push($this->sections, new StringSection($section, "\""));
 							$string = 0;
 							$section = "";
 						}
@@ -82,7 +82,7 @@ class Code
 					case "'":
 						if($string == 2)
 						{
-							array_push($this->sections, new StringSection($section));
+							array_push($this->sections, new StringSection($section, "'"));
 							$string = 0;
 							$section = "";
 						}
@@ -270,7 +270,7 @@ class Code
 		for($i = 0; $i <= $i_limit; $i++)
 		{
 			$code .= $this->sections[$i]->getCode();
-			if($this->sections[$i]->requires_delimiter && $i < $i_limit && !$this->sections[$i + 1]->delimits())
+			if($this->sections[$i]->requiresDelimiter() && $i < $i_limit && !$this->sections[$i + 1]->delimits())
 			{
 				$code .= " ";
 			}

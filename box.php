@@ -13,7 +13,7 @@ use Phine\
 {Code, Project, Section};
 if(empty($argv[1]))
 {
-	die("Syntax: php box.php <file> [desired_line_width = 80]\n");
+	die("Syntax: php box.php <file> [desired_line_width = 80] [--no-minify]\n");
 }
 $code = file_get_contents($argv[1]);
 echo "Parsing code...";
@@ -21,20 +21,14 @@ $time = microtime(true);
 $code = new Code($code);
 echo " Done in ".(microtime(true) - $time)." seconds.\n";
 $project = new Project($code);
-echo "Renaming things...";
-$time = microtime(true);
-$vars = $project->renameVariables();
-$funcs = $project->renameFunctions();
-echo " Renamed {$vars} variables and {$funcs} functions in ".(microtime(true) - $time)." seconds.\n";
-$out_name = $argv[1];
-if(substr($out_name, -4) == ".php")
+if(@$argv[3] !== "--no-minify")
 {
-	$out_name = substr($out_name, 0, -4).".box.php";
+	echo "Renaming variables and functions...";
+	$time = microtime(true);
+	$project->minifyNames();
+	echo " Done in ".(microtime(true) - $time)." seconds.\n";
 }
-else
-{
-	$out_name .= ".box";
-}
+$out_name = substr($argv[1], -4) == ".php" ? substr($argv[1], 0, -4).".box.php" : $argv[1].".box";
 $time = microtime(true);
 echo "Writing boxed code to $out_name...";
 $fh = fopen($out_name, "w");
@@ -59,6 +53,7 @@ function writeLine($line)
 		fwrite($fh, "\n");
 	}
 }
+
 function handleSection(Section $section)
 {
 	global $line, $desired_line_length;
@@ -84,6 +79,7 @@ function handleSection(Section $section)
 		$line = "";
 	}
 }
+
 for($i = 0; $i <= $i_limit; $i++)
 {
 	$section = $code->sections[$i];

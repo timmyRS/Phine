@@ -2,8 +2,7 @@
 	"name": "timmyrs/phine",
 	"description": "A very basic PHP parser to minify and art-ify PHP code.",
 	"keywords": [
-		"parser",
-		"minifier"
+		"parser", "minifier"
 	],
 	"homepage": "https://github.com/timmyRS/Phine",
 	"type": "library",

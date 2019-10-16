@@ -17,13 +17,11 @@
 					"unix": {
 						"url": "https://github.com/timmyRS/Phine/archive/master.tar.gz"
 					}
-				},
-				{
+				}, {
 					"type": "keep",
 					"file": "tmp/Phine-master",
 					"as": ""
-				},
-				{
+				}, {
 					"type": "delete",
 					"file": "tmp"
 				}

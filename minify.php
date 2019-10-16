@@ -10,7 +10,7 @@ if(!is_file(__DIR__."/vendor/autoload.php"))
 }
 require "vendor/autoload.php";
 use Phine\
-{Project, Code};
+{Code, Project};
 if(empty($argv[1]) || !file_exists($argv[1]))
 {
 	die("Syntax: php minify.php <file or folder>\n");
@@ -22,14 +22,7 @@ function recursivelyIndex(string $input_path, $output_path = null)
 	{
 		if($output_path === null)
 		{
-			if(substr($input_path, -4) == ".php")
-			{
-				$output_path = substr($input_path, 0, -4).".min.php";
-			}
-			else
-			{
-				$output_path = $input_path.".min";
-			}
+			$output_path = substr($input_path, -4) == ".php" ? substr($input_path, 0, -4).".min.php" : $input_path.".min";
 		}
 		global $project;
 		$code = file_get_contents($input_path);
@@ -54,6 +47,7 @@ function recursivelyIndex(string $input_path, $output_path = null)
 		}
 	}
 }
+
 recursivelyIndex(rtrim($argv[1], "/"));
 echo "Renaming variables and functions...";
 $time = microtime(true);

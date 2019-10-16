@@ -14,7 +14,7 @@ Rest assured that Phine will not modify your code directly and instead create a 
 
 ### Cone
 
-If you have [Cone](https://getcone.org), you can install Phine to get the global `phine-minify` and `phine-box` commands:
+If you have [Cone](https://getcone.org), you can install Phine to get the global `phine-minify`, `phine-box`, and `phine-parse` commands:
 
 ```Bash
 cone add-source https://raw.githubusercontent.com/timmyRS/Phine/master/cone.json

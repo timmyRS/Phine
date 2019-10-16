@@ -42,6 +42,14 @@
 							"path": "minify.php"
 						}
 					]
+				},
+				"phine-parse": {
+					"target": "php",
+					"target_arguments": [
+						{
+							"path": "parse.php"
+						}
+					]
 				}
 			}
 		}

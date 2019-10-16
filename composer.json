@@ -5,6 +5,9 @@
 		"parser",
 		"minifier"
 	],
+	"homepage": "https://github.com/timmyRS/Phine",
+	"type": "library",
+	"license": "MIT",
 	"autoload": {
 		"psr-4": {
 			"Phine\\": "src/"

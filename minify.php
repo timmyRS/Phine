@@ -53,8 +53,12 @@ echo "Renaming variables and functions...";
 $time = microtime(true);
 $project->minifyNames();
 echo " Done in ".(microtime(true) - $time)." seconds.\n";
-@mkdir(dirname(array_keys($project->files)[0]), 0777, true);
 foreach($project->files as $name => $code)
 {
+	$dir = dirname($name);
+	if(!is_dir($dir))
+	{
+		mkdir($dir, 0777, true);
+	}
 	file_put_contents($name, $code->getCode());
 }

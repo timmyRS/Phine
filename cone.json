@@ -1,0 +1,51 @@
+{
+	"name": "Phine Repository",
+	"packages": [
+		{
+			"name": "phine",
+			"version": "dev-master",
+			"dependencies": [
+				"composer"
+			],
+			"install": [
+				{
+					"type": "platform_download_and_extract",
+					"target": "tmp",
+					"windows": {
+						"url": "https://github.com/timmyRS/Phine/archive/master.zip"
+					},
+					"unix": {
+						"url": "https://github.com/timmyRS/Phine/archive/master.tar.gz"
+					}
+				},
+				{
+					"type": "keep",
+					"file": "tmp/Phine-master",
+					"as": ""
+				},
+				{
+					"type": "delete",
+					"file": "tmp"
+				}
+			],
+			"shortcuts": {
+				"phine-box": {
+					"target": "php",
+					"target_arguments": [
+						{
+							"path": "box.php"
+						}
+					]
+				},
+				"phine-minify": {
+					"target": "php",
+					"target_arguments": [
+						{
+							"path": "minify.php"
+						}
+					]
+				}
+			}
+		}
+	]
+}

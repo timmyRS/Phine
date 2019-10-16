@@ -1,0 +1,16 @@
+{
+	"name": "timmyrs/phine",
+	"description": "A very basic PHP parser to minify and art-ify PHP code.",
+	"keywords": [
+		"parser",
+		"minifier"
+	],
+	"autoload": {
+		"psr-4": {
+			"Phine\\": "src/"
+		}
+	},
+	"require": {
+		"php": "^7.0"
+	}
+}

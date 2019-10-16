@@ -35,7 +35,10 @@ class Section
 			"use",
 			"class",
 			"namespace",
-			"extends"
+			"extends",
+			"require",
+			"require_once",
+			"include"
 		]));
 	}
 

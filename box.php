@@ -1,7 +1,7 @@
 <?php /** @noinspection PhpUnhandledExceptionInspection */
 if(empty($argv[1]))
 {
-	die("Syntax: php box.php <file> [desired_line_width = 80] [--no-minify]\n");
+	die("Syntax: php box.php <file> [desired_line_width = 80] [--no-minify] [--no-padding]\n");
 }
 if(!is_file(__DIR__."/vendor/autoload.php"))
 {
@@ -21,7 +21,7 @@ $time = microtime(true);
 $code = new Code($code);
 echo " Done in ".(microtime(true) - $time)." seconds.\n";
 $project = new Project($code);
-if(@$argv[3] !== "--no-minify")
+if(@$argv[3] !== "--no-minify" && @$argv[4] !== "--no-minify")
 {
 	echo "Renaming variables and functions...";
 	$time = microtime(true);
@@ -37,18 +37,21 @@ $line = "";
 $desired_line_length = $argv[2] ?? 80;
 function writeLine($line)
 {
-	global $desired_line_length, $fh;
+	global $desired_line_length, $fh, $argv;
 	if($line !== "")
 	{
 		$remaining = $desired_line_length - strlen($line);
 		fwrite($fh, $line);
-		if($remaining >= 4)
+		if(@$argv[3] !== "--no-padding" && @$argv[4] !== "--no-padding")
 		{
-			fwrite($fh, "/".str_repeat("*", $remaining - 2)."/");
-		}
-		else if($remaining >= 2)
-		{
-			fwrite($fh, str_repeat("/", $remaining));
+			if($remaining >= 4)
+			{
+				fwrite($fh, "/".str_repeat("*", $remaining - 2)."/");
+			}
+			else if($remaining >= 2)
+			{
+				fwrite($fh, str_repeat("/", $remaining));
+			}
 		}
 		fwrite($fh, "\n");
 	}

@@ -153,6 +153,7 @@ class Code
 				case "]":
 				case "{":
 				case "}":
+				case "\\":
 					if($section !== "")
 					{
 						array_push($this->sections, Section::fromCode($section));

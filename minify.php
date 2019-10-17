@@ -1,7 +1,7 @@
 <?php /** @noinspection PhpUnhandledExceptionInspection */
 if(empty($argv[1]) || !file_exists($argv[1]))
 {
-	die("Syntax: php minify.php <file or folder>\n");
+	die("Syntax: php minify.php <file or folder> [--keep-public-names]\n");
 }
 if(!is_file(__DIR__."/vendor/autoload.php"))
 {
@@ -51,7 +51,7 @@ function recursivelyIndex(string $input_path, $output_path = null)
 recursivelyIndex(rtrim($argv[1], "/"));
 echo "Renaming variables and functions...";
 $time = microtime(true);
-$project->minifyNames();
+$project->minifyNames(@$argv[2] == "--keep-public-names" ? Project::NO_PUBLIC : Project::NO_LIMITS);
 echo " Done in ".(microtime(true) - $time)." seconds.\n";
 foreach($project->files as $name => $code)
 {

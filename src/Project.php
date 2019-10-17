@@ -28,20 +28,12 @@ class Project
 
 	/**
 	 * Minifies the names of variables and functions.
-	 *
-	 * @todo Give the most commonly-used things the shortest names.
 	 */
 	function minifyNames()
 	{
-		$names = range("a", "z");
-		array_push($names, "_");
-		$i = 0;
-		$i_limit = 26;
-		$map = [
-			"__construct" => "__construct"
-		];
+		$symbols = [];
 		$func_list = [];
-		$state = 0;
+		$next_is_function = false;
 		foreach($this->files as $code)
 		{
 			$j_limit = count($code->sections) - 1;
@@ -52,14 +44,77 @@ class Project
 				{
 					if(!$section->isBuiltIn())
 					{
-						if(!array_key_exists($section->content, $map))
+						if(array_key_exists($section->content, $symbols))
 						{
-							$map[$section->content] = $names[$i++];
-							if($i == $i_limit)
+							$symbols[$section->content]++;
+						}
+						else
+						{
+							$symbols[$section->content] = 1;
+						}
+					}
+				}
+				else if($section instanceof Section)
+				{
+					if($next_is_function)
+					{
+						if($section->content != "(")
+						{
+							if(array_key_exists($section->content, $symbols))
 							{
-								self::generateMoreNames($names, $i_limit);
+								$symbols[$section->content]++;
+							}
+							else
+							{
+								$symbols[$section->content] = 1;
+								array_push($func_list, $section->content);
 							}
 						}
+						$next_is_function = false;
+					}
+					else if($section->content == "function")
+					{
+						$next_is_function = true;
+					}
+				}
+			}
+		}
+		assert(!$next_is_function);
+		assert(arsort($symbols));
+		$names = range("a", "z");
+		array_push($names, "_");
+		$i = 0;
+		$i_limit = 26;
+		$map = [
+			"__construct" => "__construct"
+		];
+		foreach($symbols as $name => $uses)
+		{
+			$map[$name] = $names[$i++];
+			if($i == $i_limit)
+			{
+				$_names = $names;
+				foreach($_names as $name)
+				{
+					for($i = 0; $i < 27; $i++)
+					{
+						array_push($names, $name.$_names[$i]);
+					}
+				}
+				$i_limit += (($i_limit + 1) * ($i_limit + 1));
+			}
+		}
+		$map = array_reverse($map, true);
+		foreach($this->files as $code)
+		{
+			$i_limit = count($code->sections) - 1;
+			for($i = 0; $i <= $i_limit; $i++)
+			{
+				$section = $code->sections[$i];
+				if($section instanceof VariableSection)
+				{
+					if(!$section->isBuiltIn())
+					{
 						$section->content = $map[$section->content] ?? $section->content;
 					}
 				}
@@ -70,52 +125,23 @@ class Project
 						$section->content = str_replace("\$".$org, "\$".$short, $section->content);
 					}
 				}
-				else
+				else //if($section instanceof Section)
 				{
-					if($state !== 0)
+					if($next_is_function)
 					{
-						if($state === 1)
-						{
-							if(!array_key_exists($section->content, $map))
-							{
-								$map[$section->content] = $names[$i++];
-								array_push($func_list, $section->content);
-								if($i == $i_limit)
-								{
-									self::generateMoreNames($names, $i_limit);
-								}
-							}
-						}
 						$section->content = $map[$section->content] ?? $section->content;
-						$state = 0;
+						$next_is_function = false;
 					}
-					else if($section->content == "function")
+					else if($section->content == "function" || $section->content == "->")
 					{
-						$state = 1;
+						$next_is_function = true;
 					}
-					else if($section->content == "->")
-					{
-						$state = 2;
-					}
-					else if(array_key_exists($section->content, $map) && in_array($section->content, $func_list))
+					else if(in_array($section->content, $func_list))
 					{
 						$section->content = $map[$section->content];
 					}
 				}
 			}
 		}
-	}
-
-	private static function generateMoreNames(array &$names, int &$i_limit)
-	{
-		$_names = $names;
-		foreach($_names as $name)
-		{
-			for($i = 0; $i < 27; $i++)
-			{
-				array_push($names, $name.$_names[$i]);
-			}
-		}
-		$i_limit += (($i_limit + 1) * ($i_limit + 1));
 	}
 }

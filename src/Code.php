@@ -1,6 +1,5 @@
 <?php
 namespace Phine;
-use Exception;
 class Code
 {
 	/**
@@ -12,7 +11,6 @@ class Code
 	 * Constructs the Code class, converting the given code into an array of sections.
 	 *
 	 * @param string $code
-	 * @throws Exception
 	 */
 	function __construct(string $code)
 	{
@@ -35,6 +33,7 @@ class Code
 					$phpmode = true;
 					array_push($this->sections, Section::fromCode($section));
 					$section = "";
+					$next_requires_delimiter = false;
 				}
 				continue;
 			}
@@ -73,6 +72,7 @@ class Code
 							array_push($this->sections, new StringSection($section, "\""));
 							$string = 0;
 							$section = "";
+							$next_requires_delimiter = false;
 						}
 						else
 						{
@@ -85,6 +85,7 @@ class Code
 							array_push($this->sections, new StringSection($section, "'"));
 							$string = 0;
 							$section = "";
+							$next_requires_delimiter = false;
 						}
 						else
 						{
@@ -109,6 +110,7 @@ class Code
 					{
 						array_push($this->sections, Section::fromCode($section));
 						$section = "";
+						$next_requires_delimiter = false;
 					}
 					$string = 1;
 					break;
@@ -117,6 +119,7 @@ class Code
 					{
 						array_push($this->sections, Section::fromCode($section));
 						$section = "";
+						$next_requires_delimiter = false;
 					}
 					$string = 2;
 					break;
@@ -128,7 +131,10 @@ class Code
 						$sec = Section::fromCode($section);
 						if($next_requires_delimiter)
 						{
-							$sec->requires_delimiter = true;
+							if($sec instanceof Section)
+							{
+								$sec->requires_delimiter = true;
+							}
 							$next_requires_delimiter = false;
 						}
 						else if($section == "class")
@@ -151,6 +157,7 @@ class Code
 					{
 						array_push($this->sections, Section::fromCode($section));
 						$section = "";
+						$next_requires_delimiter = false;
 					}
 					array_push($this->sections, Section::fromCode($char));
 					break;
@@ -174,12 +181,16 @@ class Code
 						"",
 						"+",
 						"-",
+						"*",
+						"/",
 						".",
 						"=",
 						"!",
 						"!=",
 						"<",
-						">"
+						">",
+						"|",
+						"&"
 					]))
 					{
 						$section .= $char;
@@ -203,6 +214,7 @@ class Code
 						{
 							array_push($this->sections, Section::fromCode($section));
 							$section = "";
+							$next_requires_delimiter = false;
 						}
 					}
 					break;
@@ -212,6 +224,7 @@ class Code
 					{
 						$comment = 1;
 						$section = "";
+						$next_requires_delimiter = false;
 					}
 					break;
 				case "*":
@@ -219,6 +232,7 @@ class Code
 					{
 						$comment = 2;
 						$section = "";
+						$next_requires_delimiter = false;
 					}
 					else
 					{
@@ -226,6 +240,7 @@ class Code
 						{
 							array_push($this->sections, Section::fromCode($section));
 							$section = "";
+							$next_requires_delimiter = false;
 						}
 						array_push($this->sections, Section::fromCode($char));
 					}
@@ -251,6 +266,7 @@ class Code
 						array_push($this->sections, Section::fromCode("?>"));
 						$phpmode = false;
 						$section = "";
+						$next_requires_delimiter = false;
 					}
 					break;
 				default:

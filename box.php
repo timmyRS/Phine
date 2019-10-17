@@ -1,4 +1,8 @@
 <?php /** @noinspection PhpUnhandledExceptionInspection */
+if(empty($argv[1]))
+{
+	die("Syntax: php box.php <file> [desired_line_width = 80] [--no-minify]\n");
+}
 if(!is_file(__DIR__."/vendor/autoload.php"))
 {
 	echo "vendor/autoload.php was not found, attempting to generate it...\n";
@@ -8,13 +12,9 @@ if(!is_file(__DIR__."/vendor/autoload.php"))
 		die("Welp, that didn't work. Try again as root/administrator.\n");
 	}
 }
-require "vendor/autoload.php";
+require __DIR__."/vendor/autoload.php";
 use Phine\
 {AbstractSection, Code, Project};
-if(empty($argv[1]))
-{
-	die("Syntax: php box.php <file> [desired_line_width = 80] [--no-minify]\n");
-}
 $code = file_get_contents($argv[1]);
 echo "Parsing code...";
 $time = microtime(true);

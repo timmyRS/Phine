@@ -57,6 +57,44 @@ class Project
 		}
 	}
 
+	function getCode(): string
+	{
+		$phpmode = false;
+		$code = "";
+		foreach($this->files as $file)
+		{
+			$i_limit = count($file->sections) - 1;
+			for($i = 0; $i <= $i_limit; $i++)
+			{
+				if($file->sections[$i] instanceof Section)
+				{
+					if($file->sections[$i]->content == "<?php")
+					{
+						if($phpmode)
+						{
+							continue;
+						}
+						$phpmode = true;
+					}
+					else if($file->sections[$i]->content == "?>")
+					{
+						if(!$phpmode)
+						{
+							continue;
+						}
+						$phpmode = false;
+					}
+				}
+				$code .= $file->sections[$i]->getCode();
+				if($file->sections[$i]->requiresDelimiter() && $i < $i_limit && !$file->sections[$i + 1]->delimits())
+				{
+					$code .= " ";
+				}
+			}
+		}
+		return $code;
+	}
+
 	/**
 	 * Minifies the names of variables and functions.
 	 *

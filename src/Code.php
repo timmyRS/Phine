@@ -282,8 +282,8 @@ class Code
 
 	function getCode(): string
 	{
-		$i_limit = count($this->sections) - 1;
 		$code = "";
+		$i_limit = count($this->sections) - 1;
 		for($i = 0; $i <= $i_limit; $i++)
 		{
 			$code .= $this->sections[$i]->getCode();

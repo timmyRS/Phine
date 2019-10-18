@@ -4,11 +4,6 @@ class VariableSection extends AbstractSection
 {
 	static $built_ins = [];
 
-	function __construct(string $content)
-	{
-		parent::__construct($content);
-	}
-
 	function getCode(): string
 	{
 		return "\$".$this->content;

@@ -43,16 +43,24 @@ class Code
 				{
 					if($char == "\n")
 					{
+						array_push($this->sections, rtrim($section, "\r"));
+						$section = "";
 						$comment = 0;
 					}
+					else
+					{
+						$section .= $char;
+					}
 				}
-				else if($comment == 2 && $char == "*")
+				else if($comment == 2)
 				{
-					$comment = 3;
-				}
-				else if($comment == 3)
-				{
-					$comment = ($char == "/" ? 0 : 2);
+					$section .= $char;
+					if($char == "/" && substr($section, -2, 1) == "*")
+					{
+						array_push($this->sections, new CommentSection(substr($section, 0, -2)));
+						$section = "";
+						$comment = 0;
+					}
 				}
 				continue;
 			}
@@ -223,17 +231,23 @@ class Code
 					$section .= $char;
 					if($section == "//")
 					{
-						$comment = 1;
 						$section = "";
+						$next_requires_delimiter = false;
+						$comment = 1;
+					}
+					else if($section != "/")
+					{
+						array_push($this->sections, Section::fromCode($section));
+						$section = "/";
 						$next_requires_delimiter = false;
 					}
 					break;
 				case "*":
 					if($section == "/")
 					{
-						$comment = 2;
 						$section = "";
 						$next_requires_delimiter = false;
+						$comment = 2;
 					}
 					else
 					{
@@ -243,7 +257,7 @@ class Code
 							$section = "";
 							$next_requires_delimiter = false;
 						}
-						array_push($this->sections, Section::fromCode($char));
+						array_push($this->sections, Section::fromCode("*"));
 					}
 					break;
 				case ">":
@@ -293,5 +307,13 @@ class Code
 			}
 		}
 		return $code;
+	}
+
+	function removeComments()
+	{
+		$this->sections = array_filter($this->sections, function($section)
+		{
+			return $section instanceof CommentSection;
+		});
 	}
 }

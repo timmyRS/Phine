@@ -311,9 +311,9 @@ class Code
 
 	function removeComments()
 	{
-		$this->sections = array_filter($this->sections, function($section)
+		$this->sections = array_values(array_filter($this->sections, function($section)
 		{
 			return $section instanceof CommentSection;
-		});
+		}));
 	}
 }

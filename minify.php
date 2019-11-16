@@ -51,6 +51,7 @@ function recursivelyIndex(string $input_path, $output_path = null)
 recursivelyIndex(rtrim($argv[1], "/"));
 echo "Renaming variables and functions...";
 $time = microtime(true);
+$project->removeComments();
 $project->minifyNames(@$argv[2] == "--keep-public-names" ? Project::NO_PUBLIC : Project::NO_LIMITS);
 echo " Done in ".(microtime(true) - $time)." seconds.\n";
 foreach($project->files as $name => $code)

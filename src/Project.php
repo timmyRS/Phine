@@ -283,4 +283,12 @@ class Project
 			}
 		}
 	}
+
+	function removeComments()
+	{
+		foreach($this->files as $code)
+		{
+			$code->removeComments();
+		}
+	}
 }

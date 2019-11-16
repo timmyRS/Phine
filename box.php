@@ -21,6 +21,7 @@ $time = microtime(true);
 $code = new Code($code);
 echo " Done in ".(microtime(true) - $time)." seconds.\n";
 $project = new Project($code);
+$project->removeComments();
 if(@$argv[3] !== "--no-minify" && @$argv[4] !== "--no-minify")
 {
 	echo "Renaming variables and functions...";

@@ -26,6 +26,7 @@ abstract class AbstractSection
 			"throw",
 			"public",
 			"private",
+			"const",
 			"var",
 			"static",
 			"abstract",

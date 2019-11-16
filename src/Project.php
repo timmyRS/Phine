@@ -264,7 +264,7 @@ class Project
 						}
 					}
 				}
-				else //if($section instanceof Section)
+				else if($section instanceof Section)
 				{
 					if($next_is_function)
 					{

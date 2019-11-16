@@ -43,7 +43,7 @@ class Code
 				{
 					if($char == "\n")
 					{
-						array_push($this->sections, rtrim($section, "\r"));
+						array_push($this->sections, new CommentSection(rtrim($section, "\r")));
 						$section = "";
 						$comment = 0;
 					}
@@ -313,7 +313,7 @@ class Code
 	{
 		$this->sections = array_values(array_filter($this->sections, function($section)
 		{
-			return $section instanceof CommentSection;
+			return !$section instanceof CommentSection;
 		}));
 	}
 }

@@ -2,7 +2,7 @@
 
 A very basic PHP parser to minify and art-ify PHP code.
 
-!["This is fine," he said amid the flames.](https://storage.hell.sh/memes/this%20is%20fine.jpg)
+!["This is fine," he said amid the flames.](https://storage.hell.sh/reactions/this%20is%20fine.jpg)
 
 ## CLI Utils
 
